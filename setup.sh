@@ -17,12 +17,11 @@ if [ -z "$PROVIDER_API_KEY" ]; then
     echo ""
     echo "Select your provider:"
     echo "  1) DeepSeek"
-    echo "  2) Zhipu GLM (智谱)"
-    echo "  3) OpenAI"
-    echo "  4) Groq"
-    echo "  5) Custom (enter URL)"
-    echo "  6) YAPI / New-API (aggregator)"
-    read -p "Choice [1-6]: " choice
+    echo "  2) OpenAI"
+    echo "  3) Groq"
+    echo "  4) Custom (enter URL)"
+    echo "  5) YAPI / New-API (aggregator)"
+    read -p "Choice [1-5]: " choice
 
     case $choice in
         1)
@@ -30,24 +29,20 @@ if [ -z "$PROVIDER_API_KEY" ]; then
             DEFAULT_MODEL="deepseek-chat"
             ;;
         2)
-            PROVIDER_BASE_URL="https://api.bigmodel.cn/v1"
-            DEFAULT_MODEL="glm-4-plus"
-            ;;
-        3)
             PROVIDER_BASE_URL="https://api.openai.com/v1"
             DEFAULT_MODEL="gpt-4o"
             ;;
-        4)
+        3)
             PROVIDER_BASE_URL="https://api.groq.com/v1"
             DEFAULT_MODEL="llama-3.3-70b-versatile"
             ;;
-        5)
+        4)
             read -p "Base URL (e.g. https://api.xxx.com/v1): " PROVIDER_BASE_URL
             read -p "Model name: " DEFAULT_MODEL
             ;;
-        6)
+        5)
             read -p "Base URL (e.g. https://your-api.click/v1): " PROVIDER_BASE_URL
-            read -p "Model name (e.g. glm-5.2): " DEFAULT_MODEL
+            read -p "Model name: " DEFAULT_MODEL
             ;;
         *)
             echo "Invalid choice."
@@ -65,7 +60,7 @@ if [ -z "$PROVIDER_API_KEY" ]; then
     if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
         cat > ~/.claude-proxy.env <<EOF
 PROVIDER_BASE_URL=$PROVIDER_BASE_URL
-PROVIDER_API_KEY=$PROVIDER_API_KEY
+PROVIDER_API_KEY=***
 PROVIDER_MODEL=$PROVIDER_MODEL
 EOF
         chmod 600 ~/.claude-proxy.env
