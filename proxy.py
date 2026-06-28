@@ -16,7 +16,7 @@ Usage:
     python3 proxy.py
 
 Then configure Claude Code:
-    ANTHROPIC_BASE_URL=http://127.0.0.1:15721
+    ANTHROPIC_BASE_URL=http://127.0.0.1:3456
     ANTHROPIC_AUTH_TOKEN=any-value
 """
 
@@ -28,7 +28,7 @@ import os
 import sys
 
 LISTEN_HOST = os.environ.get("LISTEN_HOST", "127.0.0.1")
-LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "15721"))
+LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "3456"))
 
 PROVIDER_BASE_URL = os.environ.get("PROVIDER_BASE_URL", "").rstrip("/")
 PROVIDER_API_KEY = os.environ.get("PROVIDER_API_KEY", "")

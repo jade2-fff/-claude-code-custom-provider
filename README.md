@@ -16,17 +16,17 @@
 16|export PROVIDER_MODEL="deepseek-chat"
 17|
 18|python3 proxy.py
-19|# → Listening on http://127.0.0.1:15721
+19|# → Listening on http://127.0.0.1:3456
 20|```
 21|
-22|Then point Claude Code at `http://127.0.0.1:15721`:
+22|Then point Claude Code at `http://127.0.0.1:3456`:
 23|
 24|**VSCode** (`Ctrl+,` → search `claudeCode`):
 25|```json
 26|{
 27|  "claudeCode.model": "claude-sonnet-4-5",
 28|  "claudeCode.environmentVariables": [
-29|    { "name": "ANTHROPIC_BASE_URL", "value": "http://127.0.0.1:15721" },
+29|    { "name": "ANTHROPIC_BASE_URL", "value": "http://127.0.0.1:3456" },
 30|    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "any" }
 31|  ]
 32|}
@@ -36,7 +36,7 @@
 36|```json
 37|{
 38|  "env": {
-39|    "ANTHROPIC_BASE_URL": "http://127.0.0.1:15721",
+39|    "ANTHROPIC_BASE_URL": "http://127.0.0.1:3456",
 40|    "ANTHROPIC_AUTH_TOKEN": "any"
 41|  }
 42|}
@@ -96,7 +96,7 @@
 97|| `PROVIDER_API_KEY` | Yes | — | Your API key |
 98|| `PROVIDER_MODEL` | No | `gpt-4o` | Model name to use |
 99|| `LISTEN_HOST` | No | `127.0.0.1` | Listen address |
-100|| `LISTEN_PORT` | No | `15721` | Listen port |
+100|| `LISTEN_PORT` | No | `3456` | Listen port |
 101|
 102|## Why Not Just Set ANTHROPIC_BASE_URL?
 103|

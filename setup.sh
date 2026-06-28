@@ -76,7 +76,7 @@ fi
 export PROVIDER_BASE_URL PROVIDER_API_KEY PROVIDER_MODEL
 
 echo ""
-echo "Starting proxy on http://127.0.0.1:15721 ..."
+echo "Starting proxy on http://127.0.0.1:3456 ..."
 echo "  Provider: $PROVIDER_BASE_URL"
 echo "  Model:    $PROVIDER_MODEL"
 echo ""
@@ -85,13 +85,13 @@ echo ""
 echo "  VSCode (settings.json):"
 echo '    "claudeCode.model": "claude-sonnet-4-5"'
 echo '    "claudeCode.environmentVariables": ['
-echo '      {"name":"ANTHROPIC_BASE_URL","value":"http://127.0.0.1:15721"},'
+echo '      {"name":"ANTHROPIC_BASE_URL","value":"http://127.0.0.1:3456"},'
 echo '      {"name":"ANTHROPIC_AUTH_TOKEN","value":"any"}'
 echo '    ]'
 echo ""
 echo "  CLI (~/.claude/settings.json):"
 echo '    "env": {'
-echo '      "ANTHROPIC_BASE_URL": "http://127.0.0.1:15721",'
+echo '      "ANTHROPIC_BASE_URL": "http://127.0.0.1:3456",'
 echo '      "ANTHROPIC_AUTH_TOKEN": "any"'
 echo '    }'
 echo ""
