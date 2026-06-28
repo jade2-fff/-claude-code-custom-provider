@@ -28,7 +28,7 @@ import os
 import sys
 
 LISTEN_HOST = os.environ.get("LISTEN_HOST", "127.0.0.1")
-LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "3456"))
+LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "8080"))
 
 PROVIDER_BASE_URL = os.environ.get("PROVIDER_BASE_URL", "").rstrip("/")
 PROVIDER_API_KEY = os.environ.get("PROVIDER_API_KEY", "")

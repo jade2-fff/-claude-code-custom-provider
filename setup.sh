@@ -22,7 +22,7 @@ if [ -z "$PROVIDER_API_KEY" ] || [ -z "$PROVIDER_BASE_URL" ]; then
     exit 1
 fi
 
-PORT="${LISTEN_PORT:-3456}"
+PORT="${LISTEN_PORT:-8080}"
 PROVIDER_MODEL="${PROVIDER_MODEL:-gpt-4o}"
 
 echo "=== Claude Code Custom Provider Proxy ==="

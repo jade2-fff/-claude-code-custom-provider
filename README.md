@@ -22,7 +22,7 @@ Then point Claude Code at the proxy:
 {
   "claudeCode.model": "claude-sonnet-4-5",
   "claudeCode.environmentVariables": [
-    { "name": "ANTHROPIC_BASE_URL", "value": "http://127.0.0.1:3456" },
+    { "name": "ANTHROPIC_BASE_URL", "value": "http://127.0.0.1:8080" },
     { "name": "ANTHROPIC_AUTH_TOKEN", "value": "any" }
   ]
 }
@@ -32,7 +32,7 @@ Then point Claude Code at the proxy:
 ```json
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "http://127.0.0.1:3456",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8080",
     "ANTHROPIC_AUTH_TOKEN": "any"
   }
 }
@@ -40,7 +40,7 @@ Then point Claude Code at the proxy:
 
 Reload VSCode, then `claude --model claude-sonnet-4-5`. Done.
 
-> Change `3456` to whatever port you want with `LISTEN_PORT=8080`.
+> Change `8080` to whatever port you want with `LISTEN_PORT=8080`.
 
 ## How It Works
 
@@ -92,7 +92,7 @@ Any OpenAI-compatible API. Here are ready-to-copy configs:
 | `PROVIDER_API_KEY` | Yes | — | Your API key |
 | `PROVIDER_MODEL` | No | `gpt-4o` | Model name to use |
 | `LISTEN_HOST` | No | `127.0.0.1` | Listen address |
-| `LISTEN_PORT` | No | `3456` | Listen port |
+| `LISTEN_PORT` | No | `8080` | Listen port |
 
 ## Why Not Just Set ANTHROPIC_BASE_URL?
 
