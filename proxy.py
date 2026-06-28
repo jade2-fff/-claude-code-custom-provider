@@ -109,7 +109,12 @@ class Proxy(http.server.BaseHTTPRequestHandler):
     # ── Internal ─────────────────────────────────────────────────────
 
     def _forward(self, method, body=None):
-        url = f"{PROVIDER_BASE_URL}{self.path}"
+        # Strip common API prefix from path to avoid double /v1
+        # e.g. PROVIDER_BASE_URL=https://api.com/v1, path=/v1/messages → /messages
+        path = self.path
+        if PROVIDER_BASE_URL.endswith("/v1") and path.startswith("/v1"):
+            path = path[3:]  # strip leading /v1
+        url = f"{PROVIDER_BASE_URL}{path}"
         req = urllib.request.Request(url, data=body, method=method)
 
         # Pass through relevant client headers
