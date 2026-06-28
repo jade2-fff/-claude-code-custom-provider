@@ -32,6 +32,15 @@ LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "8080"))
 
 PROVIDER_BASE_URL = os.environ.get("PROVIDER_BASE_URL", "").rstrip("/")
 PROVIDER_API_KEY = os.environ.get("PROVIDER_API_KEY", "")
+
+# Also read key from file if env var not set
+_provider_key = os.environ.get("UPSTREAM_KEY", "")
+_key_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".api-key")
+if not _provider_key and os.path.exists(_key_file):
+    with open(_key_file) as f:
+        _provider_key = f.read().strip()
+PROVIDER_API_KEY = _provider_key
+
 PROVIDER_MODEL = os.environ.get("PROVIDER_MODEL", "gpt-4o")
 
 if not PROVIDER_BASE_URL or not PROVIDER_API_KEY:
