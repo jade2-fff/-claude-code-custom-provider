@@ -1,0 +1,27 @@
+[project]
+name = "claude-code-proxy"
+version = "0.1.0"
+description = "Let Claude Code use any OpenAI-compatible API via a local proxy that translates model names on the fly"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Internet :: Proxy Servers",
+]
+keywords = ["claude-code", "proxy", "anthropic", "openai", "api-gateway"]
+urls = {Repository = "https://github.com/jade2-fff/-claude-code-custom-provider"}
+
+[project.scripts]
+claude-code-proxy = "proxy:main"
+
+[tool.setuptools]
+py-modules = ["proxy"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.backends._legacy:_Backend"

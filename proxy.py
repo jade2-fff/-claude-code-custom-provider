@@ -155,7 +155,8 @@ class Proxy(http.server.BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(data).encode())
 
 
-if __name__ == "__main__":
+def main():
+    """Entry point for console_scripts."""
     server = http.server.HTTPServer((LISTEN_HOST, LISTEN_PORT), Proxy)
     print(f"Claude Code Custom Provider Proxy", flush=True)
     print(f"  Listening: http://{LISTEN_HOST}:{LISTEN_PORT}", flush=True)
@@ -166,3 +167,7 @@ if __name__ == "__main__":
         server.serve_forever()
     except KeyboardInterrupt:
         print("\nShutting down.", flush=True)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,31 +1,33 @@
 # Claude Code Custom Provider Proxy
 
-Let Claude Code (CLI & VSCode) use **any** OpenAI-compatible API provider — DeepSeek, GLM, Qwen, Groq, local LLMs, etc.
+> **Use Claude Code with ANY LLM.** DeepSeek, GLM, Qwen, Groq, Ollama — if it speaks OpenAI API, it works.
 
-Claude Code hard-codes Anthropic model names (`claude-sonnet-4-5`, etc.) and rejects anything it doesn't recognise. This proxy sits between Claude Code and your provider, translating model names on the fly so Claude Code thinks it's talking to Anthropic.
+Claude Code locks you into Anthropic models. This 150-line proxy breaks the lock. It sits between Claude Code and your API provider, translating model names on the fly. Claude Code thinks it's talking to Anthropic. You're actually using whatever model you want.
 
-## Quick Start
+## 30-Second Setup
 
 ```bash
-# 1. Set your provider credentials
-export PROVIDER_BASE_URL="https://your-api.com/v1"
-export PROVIDER_API_KEY="your-api-key"
-export PROVIDER_MODEL="your-model-name"    # default: gpt-4o
+git clone https://github.com/jade2-fff/-claude-code-custom-provider
+cd -claude-code-custom-provider
 
-# 2. Start the proxy
+# Pick your provider:
+export PROVIDER_BASE_URL="https://api.deepseek.com/v1"
+export PROVIDER_API_KEY="***"or"
+export PROVIDER_MODEL="deepseek-chat"
+
 python3 proxy.py
-# Listening on http://127.0.0.1:15721
+# → Listening on http://127.0.0.1:15721
 ```
 
-Then point Claude Code at the proxy:
+Then point Claude Code at `http://127.0.0.1:15721`:
 
-**VSCode** (`settings.json`):
+**VSCode** (`Ctrl+,` → search `claudeCode`):
 ```json
 {
   "claudeCode.model": "claude-sonnet-4-5",
   "claudeCode.environmentVariables": [
     { "name": "ANTHROPIC_BASE_URL", "value": "http://127.0.0.1:15721" },
-    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "any-value" }
+    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "any" }
   ]
 }
 ```
@@ -35,87 +37,114 @@ Then point Claude Code at the proxy:
 {
   "env": {
     "ANTHROPIC_BASE_URL": "http://127.0.0.1:15721",
-    "ANTHROPIC_AUTH_TOKEN": "any-value"
+    "ANTHROPIC_AUTH_TOKEN": "any"
   }
 }
 ```
 
-```bash
-claude --model claude-sonnet-4-5
-```
+Reload VSCode, then `claude --model claude-sonnet-4-5`. Done.
 
 ## How It Works
 
 ```
-Claude Code                    proxy.py                    Your Provider
-──────────                    ────────                    ─────────────
-POST /v1/messages      →     model="claude-sonnet-4-5"
-model=claude-sonnet-4-5       ↓ translate                 
-                              model="glm-5.2"        →    POST /v1/chat/completions
-                                                           model=glm-5.2
-                              ← response              ←    "Hello!"
-← "Hello!"
+┌─────────────┐     ┌──────────────┐     ┌────────────────┐
+│  Claude Code │ ──▶ │   proxy.py   │ ──▶ │  Your Provider │
+│             │     │              │     │                │
+│  model:     │     │  translate   │     │  model:        │
+│  claude-    │     │  claude-* →  │     │  deepseek-chat │
+│  sonnet-4-5 │     │  your model  │     │  (or whatever) │
+└─────────────┘     └──────────────┘     └────────────────┘
 ```
 
-- `GET /v1/models` → returns fake Claude model list to pass validation
-- `POST /v1/messages` → replaces Claude model names with `PROVIDER_MODEL`
-- Everything else forwarded as-is
+- `GET /v1/models` → returns fake Claude model list to pass Claude Code's model validation
+- `POST /v1/messages` → replaces any `claude-*` model name with your `PROVIDER_MODEL`
+- Everything else → forwarded transparently
+
+## Supported Providers
+
+Any OpenAI-compatible API. Here are ready-to-copy configs:
+
+| Provider | PROVIDER_BASE_URL | PROVIDER_MODEL |
+|---|---|---|
+| **DeepSeek** | `https://api.deepseek.com/v1` | `deepseek-chat` |
+| **DeepSeek V4 Pro** | `https://api.deepseek.com/v1` | `deepseek-v4-pro` |
+| **Zhipu GLM** | `https://open.bigmodel.cn/api/paas/v4` | `glm-4-plus` |
+| **Zhipu GLM-5.2** | `https://open.bigmodel.cn/api/paas/v4` | `glm-5.2` |
+| **Qwen (通义千问)** | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `qwen-plus` |
+| **Qwen Max** | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `qwen-max` |
+| **OpenAI** | `https://api.openai.com/v1` | `gpt-4o` |
+| **Groq** | `https://api.groq.com/openai/v1` | `llama-3.3-70b-versatile` |
+| **Groq (fast)** | `https://api.groq.com/openai/v1` | `deepseek-r1-distill-llama-70b` |
+| **Ollama (local)** | `http://localhost:11434/v1` | `llama3.2` |
+| **vLLM (local)** | `http://localhost:8000/v1` | `your-model-name` |
+| **YAPI / New-API** | `https://your-yapi.click/v1` | `any-model-on-your-key` |
+| **OpenRouter** | `https://openrouter.ai/api/v1` | `openai/gpt-4o` |
+| **Together AI** | `https://api.together.xyz/v1` | `meta-llama/Llama-3.3-70B-Instruct-Turbo` |
+| **SiliconFlow** | `https://api.siliconflow.cn/v1` | `deepseek-ai/DeepSeek-V3` |
+| **Moonshot (月之暗面)** | `https://api.moonshot.cn/v1` | `moonshot-v1-8k` |
+| **MiniMax** | `https://api.minimax.chat/v1` | `abab6.5s-chat` |
+| **StepFun (阶跃星辰)** | `https://api.stepfun.com/v1` | `step-1-8k` |
+| **Baichuan (百川)** | `https://api.baichuan-ai.com/v1` | `Baichuan4` |
+| **Doubao (豆包)** | `https://ark.cn-beijing.volces.com/api/v3` | `your-endpoint-id` |
+
+> Don't see yours? If it has an OpenAI-compatible `/v1/chat/completions` endpoint, it works.
 
 ## Environment Variables
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `PROVIDER_BASE_URL` | Yes | — | Your provider's API base URL |
-| `PROVIDER_API_KEY` | Yes | — | Your provider's API key |
-| `PROVIDER_MODEL` | No | `gpt-4o` | Model name sent to your provider |
-| `LISTEN_HOST` | No | `127.0.0.1` | Proxy listen address |
-| `LISTEN_PORT` | No | `15721` | Proxy listen port |
+| `PROVIDER_BASE_URL` | Yes | — | Provider API base URL (with `/v1`) |
+| `PROVIDER_API_KEY` | Yes | — | Your API key |
+| `PROVIDER_MODEL` | No | `gpt-4o` | Model name to use |
+| `LISTEN_HOST` | No | `127.0.0.1` | Listen address |
+| `LISTEN_PORT` | No | `15721` | Listen port |
 
-## Supported Providers
+## Why Not Just Set ANTHROPIC_BASE_URL?
 
-Any OpenAI-compatible API works. Tested with:
+You can point Claude Code at any Anthropic-compatible endpoint by setting `ANTHROPIC_BASE_URL`. That works — **if** the provider uses the same `/v1/messages` Anthropic format and **if** Claude Code doesn't reject the model name.
 
-- **YAPI / New-API** (aggregators)
-- **Zhipu GLM** (open.bigmodel.cn)
-- **DeepSeek**
-- **OpenAI**
-- **Groq**
-- **local** (ollama, vllm, llama.cpp)
+The problem: Claude Code validates model names. Set `ANTHROPIC_MODEL=deepseek-chat` and Claude Code says *"There's an issue with the selected model. It may not exist."* This proxy solves that by lying about `/v1/models` and translating model names.
 
-## Claude Model Mapping
+## Auto-Start on Boot (systemd)
 
-All Claude model names map to a single `PROVIDER_MODEL`:
-
-| Claude Code model | → | Sent to provider |
-|---|---|---|
-| `claude-sonnet-4-5` | → | `PROVIDER_MODEL` |
-| `claude-opus-4-7` | → | `PROVIDER_MODEL` |
-| `claude-haiku-4-5` | → | `PROVIDER_MODEL` |
-| ... any `claude-*` | → | `PROVIDER_MODEL` |
-
-## Auto-Start (systemd)
-
-```ini
-# ~/.config/systemd/user/claude-proxy.service
+```bash
+cat << 'EOF' > ~/.config/systemd/user/claude-proxy.service
 [Unit]
 Description=Claude Code Provider Proxy
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /path/to/proxy.py
-Environment=PROVIDER_BASE_URL=https://your-api.com/v1
+ExecStart=/usr/bin/python3 /home/YOU/-claude-code-custom-provider/proxy.py
+Environment=PROVIDER_BASE_URL=https://api.deepseek.com/v1
 Environment=PROVIDER_API_KEY=***
-Environment=PROVIDER_MODEL=gpt-4o
-Restart=always
-
-[Install]
-WantedBy=default.target
-```
-
-```bash
-systemctl --user daemon-reload
+E...systemctl --user daemon-reload
 systemctl --user enable --now claude-proxy
 ```
+
+## Comparison
+
+| | Proxy (this project) | ANTHROPIC_BASE_URL alone | CC-Switch |
+|---|---|---|---|
+| Works with VSCode | ✅ | ❌ (model rejection) | ✅ |
+| Works with CLI | ✅ | ⚠️ (model-dependent) | ✅ |
+| Any OpenAI-compatible API | ✅ | ❌ (needs Anthropic format) | ✅ |
+| Lines of code | ~150 | 0 | 50,000+ |
+| Dependencies | Python stdlib only | — | Electron app |
+| Setup time | 30 seconds | ❌ (doesn't work) | 10+ minutes |
+
+## FAQ
+
+**Q: Are thinking/reasoning models supported?**  
+Yes. GLM-5.2, DeepSeek-R1, o1-style models work. The proxy forwards SSE streams transparently. Note: reasoning models spend tokens on internal thinking — make sure your `max_tokens` is high enough for both thinking and the final answer.
+
+**Q: Does this work with Claude Code's tool use?**  
+Yes. Tool definitions, system prompts, multi-turn conversations — all forwarded as-is.
+
+**Q: Is this against Anthropic's ToS?**  
+This tool doesn't touch Anthropic's servers. It only connects Claude Code to third-party APIs using your own keys. You're responsible for compliance with those third-party providers.
+
+**Q: What about rate limits?**  
+Claude Code's own rate limiting is bypassed. Your provider's rate limits apply.
 
 ## License
 
